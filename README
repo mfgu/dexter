@@ -1,0 +1,10 @@
+1. place dexter in your path, adjust python executable path.
+2. have PIL, matplotlib installed under python
+3. invoke as dexter imgfile
+4. outfile in the Data Extractor window should be the file name that will contain the extracted data points
+5. xlim/ylim specifies the data limit in x-axis/y-axis, 3rd parameter is 1 indicates a log scale
+6. Plot button shows the plot.
+7. Open button opens the outfile
+8. Close button closes the outfile
+9. Quit button exits the program.
+10. after specifying Outfile, xlim (x0 and x1), ylim (y0 and y1), press plot, on the image window, move cursor to the point corresponding to (x0,y0), press a key and mouse left, then move cursor to the point corresponding to (x1,y1), press b key and mouse left, this defines the data scale. then move cursor to the data points, press d key and the mouse left, this will write a line in the Outfile giving the x and y coordinates. if press m key, and move the mouse, a continuous stream of data points is written to Outfile.
