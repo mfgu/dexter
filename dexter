@@ -150,7 +150,7 @@ def press(event):
     elif event.key == 'e' or event.key == 'E':
         quit()
     
-from Tkinter import *
+from tkinter import *
 root = Tk()
 root.title('Data Extractor')
 f = Frame(root)
