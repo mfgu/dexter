@@ -7,6 +7,8 @@ choose data points with left mouse button while pressing 'd'
 """
 
 import sys
+import matplotlib
+matplotlib.use('TkAgg')
 from pylab import *
 from matplotlib import widgets
 
@@ -20,7 +22,7 @@ def plotimage():
     from PIL import Image
     fn = inp[0].get()
     fn = fn.strip()
-    print 'Reading Infile: %s'%fn
+    print('Reading Infile: %s'%fn)
     d = Image.open(fn)
     d = d.transpose(Image.FLIP_TOP_BOTTOM)
     try:
@@ -35,7 +37,6 @@ def plotimage():
     axis('off')
     show()
     try:
-        cid = connect('button_press_event', click)
         qid = connect('key_press_event', press)
         mid = connect('motion_notify_event', move)
     except:
@@ -45,11 +46,11 @@ def openout():
     global outf, x0, y0, x1, y1, xlog, ylog
     fn = inp[1].get()
     fn = fn.strip()
-    print 'Opening Outfile: %s'%fn
+    print('Opening Outfile: %s'%fn)
     try:
         outf = open(fn, 'w')
     except:
-        print 'cannot open file %s'%fn
+        print('cannot open file %s'%fn)
         return
     
     b = inp[2].get()
@@ -68,8 +69,8 @@ def openout():
         ylog = int(b[2])
     else:
         ylog = 0
-    print 'xd0,xd1,xlog = %10.3E,%10.3E,%d'%(x0, x1, xlog)
-    print 'yd0,yd1,ylog = %10.3E,%10.3E,%d'%(y0, y1, ylog)
+    print('xd0,xd1,xlog = %10.3E,%10.3E,%d'%(x0, x1, xlog))
+    print('yd0,yd1,ylog = %10.3E,%10.3E,%d'%(y0, y1, ylog))
     if xlog:
         x0 = log10(x0)
         x1 = log10(x1)
@@ -81,7 +82,7 @@ def closeout():
     global outf
     fn = inp[1].get()
     fn = fn.strip()
-    print 'Closing Outfile: %s'%fn
+    print('Closing Outfile: %s'%fn)
     try:
         outf.close()
     except:
@@ -91,47 +92,7 @@ def quit():
     global root
     closeout()
     root.quit()
-    
-def click(event):
-    global ax, ay, bx, by, x0, y0, x1, y1, i0, i1, j0, j1, outf, inp, xlog, ylog
-
-    if (outf == None):
-        openout()
-    if (outf.closed):
-        openout()
-    
-    if event.button == 1 and (event.key == 'a' or event.key == 'A'):
-        i0 = event.xdata
-        j0 = event.ydata
-        ax = None
-        print 'x0=%12.5E, y0=%12.5E'%(i0, j0)
-    elif event.button == 1 and (event.key == 'b' or event.key == 'B'):
-        if (i0 == None):
-            print 'define x0, y0 with left button while pressing "a"'
-            return
-        i1 = event.xdata
-        j1 = event.ydata
-        print 'x1=%12.5E, y1=%12.5E'%(i1, j1)
-        ax = (x1 - x0)/(i1 - i0)
-        bx = x0 - ax*i0
-        ay = (y1 - y0)/(j1 - j0)
-        by = y0 - ay*j0
-        print 'ax, bx = %f, %f'%(ax, bx)
-        print 'ay, by = %f, %f'%(ay, by)
-    elif event.button == 1 and (event.key == 'd' or event.key == 'D'):
-        if (ax == None):
-            print 'define x0, y0 with left button while pressing "a"'
-            print 'define x1, y1 with left button while pressing "b"'
-            return
-        x = ax*event.xdata + bx
-        y = ay*event.ydata + by
-        if xlog:
-            x = 10**x
-        if ylog:
-            y = 10**y
-        print '%12.5E %12.5E %12.5E %12.5E'%(event.xdata, event.ydata, x, y)
-        outf.write("%12.5E %12.5E\n"%(x, y))    
-
+       
 def move(event):
     global ax, ay, bx, by, x0, y0, x1, y1, i0, i1, j0, j1, outf, inp
         
@@ -142,13 +103,51 @@ def move(event):
             x = 10**x
         if ylog:
             y = 10**y
-        print '%12.5E %12.5E %12.5E %12.5E'%(event.xdata, event.ydata, x, y)
+        print('%12.5E %12.5E %12.5E %12.5E'%(event.xdata, event.ydata, x, y))
         outf.write("%12.5E %12.5E\n"%(x, y))
         
 def press(event):
-    if event.key == 'q' or event.key == 'Q':
+    global ax, ay, bx, by, x0, y0, x1, y1, i0, i1, j0, j1, outf, inp, xlog, ylog
+
+    if (outf == None):
+        openout()
+    if (outf.closed):
+        openout()
+    
+    if event.key == 'a' or event.key == 'A':
+        i0 = event.xdata
+        j0 = event.ydata
+        ax = None
+        print('x0=%12.5E, y0=%12.5E'%(i0, j0))
+    elif event.key == 'b' or event.key == 'B':
+        if (i0 == None):
+            print('define x0, y0 with left button while pressing "a"')
+            return
+        i1 = event.xdata
+        j1 = event.ydata
+        print('x1=%12.5E, y1=%12.5E'%(i1, j1))
+        ax = (x1 - x0)/(i1 - i0)
+        bx = x0 - ax*i0
+        ay = (y1 - y0)/(j1 - j0)
+        by = y0 - ay*j0
+        print('ax, bx = %f, %f'%(ax, bx))
+        print('ay, by = %f, %f'%(ay, by))
+    elif event.key == 'd' or event.key == 'D':
+        if (ax == None):
+            print('define x0, y0 with left button while pressing "a"')
+            print('define x1, y1 with left button while pressing "b"')
+            return
+        x = ax*event.xdata + bx
+        y = ay*event.ydata + by
+        if xlog:
+            x = 10**x
+        if ylog:
+            y = 10**y
+        print('%12.5E %12.5E %12.5E %12.5E'%(event.xdata, event.ydata, x, y))
+        outf.write("%12.5E %12.5E\n"%(x, y)) 
+    elif event.key == 'q' or event.key == 'Q':
         closeout()
-    if event.key == 'e' or event.key == 'E':
+    elif event.key == 'e' or event.key == 'E':
         quit()
     
 from Tkinter import *
